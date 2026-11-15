@@ -1,1 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERLOUREN — Отзывы клиентов</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
+*{box-sizing:border-box}
+body{
+ margin:0;background:#09080e;color:#fff;
+ font-family:Inter,Arial,sans-serif;
+ min-height:100vh;
+}
+body:before{
+ content:"";position:fixed;top:-220px;left:50%;
+ transform:translateX(-50%);
+ width:650px;height:450px;
+ background:#7625ff;filter:blur(170px);
+ opacity:.20;pointer-events:none;
+}
+.container{max-width:900px;margin:auto;padding:25px 20px 70px;position:relative}
+header{text-align:center;padding:40px 0 30px}
+.logo{font-size:27px;font-weight:900;letter-spacing:5px}
+.logo span{color:#a66aff}
+.subtitle{color:#898397;font-size:13px;margin-top:12px}
+h1{font-size:34px;margin:32px 0 10px;font-weight:900}
+.description{color:#9892a5;font-size:14px}
+.stats{
+ margin:30px 0;padding:25px;
+ background:linear-gradient(135deg,#171121,#100d18);
+ border:1px solid #35234c;border-radius:20px;
+ display:flex;justify-content:space-around;
+ text-align:center;gap:15px;flex-wrap:wrap;
+}
+.stat strong{display:block;font-size:27px;margin-bottom:8px}
+.stat small{color:#9991a7;font-size:12px}
+.stars{color:#ffc44d;letter-spacing:3px}
+.reviews{display:grid;gap:13px}
+.review{
+ background:#121019;border:1px solid #282333;
+ border-radius:16px;padding:20px;
+ animation:appear .35s ease both;
+}
+@keyframes appear{
+ from{opacity:0;transform:translateY(12px)}
+ to{opacity:1;transform:translateY(0)}
+}
+.review-top{display:flex;justify-content:space-between;gap:10px}
+.review-id{font-size:12px;color:#a66aff;font-weight:700}
+.review-date{font-size:11px;color:#777183}
+.review-stars{color:#ffc44d;margin:12px 0;letter-spacing:3px}
+.review-text{font-size:14px;line-height:1.65;color:#d5d0df}
+.verified{font-size:11px;color:#8e80a4;margin-top:15px}
+button{
+ display:block;margin:30px auto 0;
+ padding:16px 35px;border:1px solid #8746e8;
+ border-radius:12px;background:#792de0;color:white;
+ font-size:14px;font-weight:800;cursor:pointer;
+ transition:.2s;
+}
+button:hover{background:#914aff;transform:translateY(-2px)}
+button:disabled{opacity:.5;cursor:default;transform:none}
+.counter{text-align:center;color:#777183;font-size:12px;margin-top:15px}
+footer{text-align:center;color:#655e70;font-size:11px;margin-top:55px}
+@media(max-width:500px){
+ h1{font-size:27px}
+ .container{padding:15px}
+ .stats{padding:20px 10px}
+ .stat strong{font-size:23px}
+ .review{padding:17px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+ <div class="logo">VERLOUREN<span>.</span></div>
+ <div class="subtitle">ОТЗЫВЫ НАШИХ КЛИЕНТОВ</div>
+ <h1>Отзывы клиентов</h1>
+ <div class="description">Истории и впечатления о сотрудничестве</div>
+</header>
+
+<section class="stats">
+ <div class="stat">
+  <strong>238</strong>
+  <small>Всего отзывов</small>
+ </div>
+ <div class="stat">
+  <strong class="stars">★★★★★</strong>
+  <small>Средняя оценка</small>
+ </div>
+ <div class="stat">
+  <strong>4.9/5</strong>
+  <small>Рейтинг</small>
+ </div>
+</section>
+
+<div class="reviews" id="reviews"></div>
+
+<button id="more" onclick="showMore()">Показать ещё</button>
+<div class="counter" id="counter">Показано 0 из 238</div>
+
+<footer>VERLOUREN REVIEWS © 2026</footer>
+</div>
+
+<script>
+// ДЕМО-ДАННЫЕ. Замени их реальными отзывами перед публикацией.
+const demoTexts = [
+ "Спасибо за быструю сделку! Всё прошло отлично.",
+ "Всё честно, быстро и без проблем. Рекомендую!",
+ "Хороший сервис, приятная поддержка.",
+ "Сделка прошла успешно, деньги получил.",
+ "Всё отлично, буду обращаться ещё.",
+ "Немного подождал, но в итоге всё хорошо.",
+ "Быстро ответили и помогли разобраться.",
+ "Отличный обмен, никаких проблем не возникло.",
+ "Всё прошло гладко, спасибо!",
+ "Удобно и надёжно, остался доволен."
+];
+
+const reviews = Array.from({length:238},(_,i)=>({
+ id:238-i,
+ text:demoTexts[i%demoTexts.length],
+ date:`${(i%27)+1}.${String((i%12)+1).padStart(2,'0')}.2026`,
+ rating: i%9===0 ? 4 : 5
+}));
+
+let shown=0;
+const step=10;
+
+function showMore(){
+ const container=document.getElementById('reviews');
+ const next=reviews.slice(shown,shown+step);
+
+ next.forEach(r=>{
+  const card=document.createElement('article');
+  card.className='review';
+
+  const top=document.createElement('div');
+  top.className='review-top';
+
+  const id=document.createElement('span');
+  id.className='review-id';
+  id.textContent='Сделка #'+r.id;
+
+  const date=document.createElement('span');
+  date.className='review-date';
+  date.textContent=r.date;
+
+  top.append(id,date);
+
+  const stars=document.createElement('div');
+  stars.className='review-stars';
+  stars.textContent='★'.repeat(r.rating)+'☆'.repeat(5-r.rating);
+
+  const content=document.createElement('div');
+  content.className='review-text';
+  content.textContent=r.text;
+
+  const verified=document.createElement('div');
+  verified.className='verified';
+  verified.textContent='Демонстрационный отзыв';
+
+  card.append(top,stars,content,verified);
+  container.appendChild(card);
+ });
+
+ shown+=next.length;
+ document.getElementById('counter').textContent=
+  `Показано ${shown} из ${reviews.length}`;
+
+ const button=document.getElementById('more');
+ if(shown>=reviews.length){
+  button.textContent='Все отзывы загружены';
+  button.disabled=true;
+ }
+}
+
+showMore();
+</script>
+</body>
+</html>
